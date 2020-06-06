@@ -12,4 +12,11 @@ class Meta extends Model
   public function metable(): MorphTo{
     return $this->morphTo();
   }
+
+  public function scopeSearch($q, $search)
+  {
+    if ($search) {
+      $q->where('name', 'LIKE', '%'.$search.'%');
+    }
+  }
 }

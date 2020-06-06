@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
   Route::apiResources([
     'users'           => 'UserCustomer',
+    'metas'           => 'MetaController',
   ]);
 });
 
@@ -39,5 +40,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:api:admin'], function (
 
   Route::apiResources([
     'admins'           => 'Admin\AdminCustomer',
+    'metas'            => 'MetaController',
   ]);
 });

@@ -57,7 +57,7 @@ class LoginController extends Controller
       if(!Auth::guard($guard)->check($credentials))
         return response()->json([
             'message' => 'credentials does not match our records',
-            'status' => false,
+            'status'  => false,
         ], 401);
 
       $user = $request->user($guard);
