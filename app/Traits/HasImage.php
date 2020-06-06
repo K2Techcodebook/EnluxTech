@@ -68,7 +68,7 @@ trait HasImage
   }
 
   public function uploadImage($image, $collection){
-    $image = 'data:image/png;base64,'.$image;
+    // $image = 'data:image/png;base64,'.$image;
     $name           = $collection;
     $type           = strpos($image, ';');
     $type           = explode(':', substr($image, 0, $type))[1];
