@@ -42,10 +42,16 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'passport',
             'provider' => 'users',
             'hash' => false,
         ],
+
+        // 'api:admin' => [
+        //     'driver' => 'passport',
+        //     'provider' => 'admins',
+        //     'hash' => false,
+        // ],
     ],
 
     /*
