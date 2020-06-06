@@ -15,10 +15,15 @@ use Spatie\Image\Image;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\HasImage;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class Admin extends Authenticatable implements HasMedia
 {
   use HasApiTokens, Notifiable, HasMeta, InteractsWithMedia, HasImage, SoftDeletes, HasMeta;
+
+  public function authorizeMedia(Media $media, String $method, Model $user){
+    return $media->model_id == $user->id && $media->model_type == get_class($user);
+  }
 
   public function grantMeToken(){
     $token          =  $this->createToken('AdminToken');
