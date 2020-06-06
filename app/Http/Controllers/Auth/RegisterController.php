@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 // use Illuminate\Validation\ValidationException;
 use App\User;
+use App\Admin;
 // use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -46,9 +47,12 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
+      $path     = $request->getPathInfo();
+      $is_admin = $path == '/api/admin/register';
+      $model    = $is_admin ? 'admins' : 'users';
       $request->validate([
-          'name'                => 'required|unique:users',
-          'email'               => 'required|email|unique:users',
+          'name'                => "required|unique:$model",
+          'email'               => "required|email|unique:$model",
           'password'            => 'required|min:6|confirmed',
           'avatar'              => '',
       ], [
@@ -57,7 +61,7 @@ class RegisterController extends Controller
 
       $avatar = $request->avatar;
 
-      $user = $this->create(array_filter($request->all()));
+      $user = $is_admin ? $this->createAdmin(array_filter($request->all())) : $this->create(array_filter($request->all()));
       ($user && $avatar) && $user->saveImage($avatar, 'avatar');
       try {
         // $user->notify(new SignupActivate($user));
@@ -66,20 +70,16 @@ class RegisterController extends Controller
         // $user->save();
       }
 
-      $tokenResult = $user->createToken('UAT');
-      $token       = $tokenResult->token;
+      $token       = $user->grantMeToken();
       if ($request->remember_me)
-          $token->expires_at = Carbon::now()->addWeeks(1);
-      $token->save();
+          $token['instance']->expires_at = Carbon::now()->addWeeks(1);
 
       return response()->json([
           'message'     => 'Successfully created user!',
           'user'        => $user,
-          'token'       => $tokenResult->accessToken,
-          'token_type'  => 'Bearer',
-          'expires_at'  => Carbon::parse(
-              $tokenResult->token->expires_at
-          )->toDateTimeString()
+          'token'       => $token['token'],
+          'token_type'  => $token['token_type'],
+          'expires_at'  => $token['expires_at'],
       ], 201);
     }
 
@@ -107,6 +107,15 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+    }
+
+    protected function createAdmin(array $data)
+    {
+        return Admin::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),

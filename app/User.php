@@ -21,9 +21,10 @@ class User extends Authenticatable implements HasMedia
     use HasApiTokens, Notifiable, HasMeta, InteractsWithMedia, HasImage, SoftDeletes, HasMeta;
 
     public function grantMeToken(){
-      $token          =  $this->createToken('MyApp');
+      $token          =  $this->createToken('UAT');
 
       return [
+        'instance'    => $token,
         'token'       => $token->accessToken,
         'token_type'  => 'Bearer',
         'expires_at'  => Carbon::parse(

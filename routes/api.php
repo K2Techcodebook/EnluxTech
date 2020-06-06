@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'guest'], function () {
   Route::post('/login', 'Auth\LoginController@login');
   Route::post('/register', 'Auth\RegisterController@register');
+
+  Route::post('/admin/login', 'Auth\LoginController@login');
+  Route::post('/admin/register', 'Auth\RegisterController@register');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
@@ -27,5 +30,14 @@ Route::group(['middleware' => 'auth:api'], function () {
 
   Route::apiResources([
     'users'           => 'UserCustomer',
+  ]);
+});
+
+Route::group(['prefix' => 'admin', 'middleware' => 'auth:api:admin'], function () {
+  Route::get('whoami', fn (Request $request) => $request->user());
+  Route::get('logout', 'Auth\LoginController@logout');
+
+  Route::apiResources([
+    'admins'           => 'Admin\AdminCustomer',
   ]);
 });

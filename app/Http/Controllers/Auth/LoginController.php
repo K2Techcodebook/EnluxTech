@@ -43,36 +43,33 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+      $path     = $request->getPathInfo();
+      $is_admin = $path == '/api/admin/login';
+      $guard    = $is_admin ? 'api:admin' : 'api';
+
       $request->validate([
         'email'       => 'required|email',
         'password'    => 'required|string',
         'remember_me' => 'boolean'
       ]);
       $credentials = request(['email', 'password']);
-      // $credentials['active'] = 0;
 
-      if(!Auth::attempt($credentials))
+      if(!Auth::guard($guard)->check($credentials))
         return response()->json([
             'message' => 'credentials does not match our records',
             'status' => false,
         ], 401);
 
-      $user = $request->user();
+      $user = $request->user($guard);
       $user->withUrls('avatar');
-      $tokenResult = $user->createToken('UAT');
-      $token = $tokenResult->token;
 
-      if ($request->remember_me)
-          $token->expires_at = Carbon::now()->addWeeks(1);
+      $token       = $user->grantMeToken();
 
-      $token->save();
       return response()->json([
-          'token' => $tokenResult->accessToken,
-          'token_type' => 'Bearer',
-          'user' => $user,
-          'expires_at' => Carbon::parse(
-              $tokenResult->token->expires_at
-          )->toDateTimeString()
+          'user'        => $user,
+          'token'       => $token['token'],
+          'token_type'  => $token['token_type'],
+          'expires_at'  => $token['expires_at'],
       ]);
     }
 
