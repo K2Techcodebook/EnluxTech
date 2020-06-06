@@ -65,6 +65,13 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
         ],
 
+        'avatars' => [
+            'driver'      => env('FILESYSTEM_DRIVER', 'local'),
+            'root'        =>  base_path('media/images/avatars'),
+            'visibility'  => 'public',
+            'url'         => env('APP_URL').'/'. 'media/images/avatars',
+        ],
+
     ],
 
     /*
