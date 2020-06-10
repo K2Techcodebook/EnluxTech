@@ -22,6 +22,15 @@ Route::group(['middleware' => 'guest'], function () {
 
   Route::post('/admin/login', 'Auth\LoginController@login');
   Route::post('/admin/register', 'Auth\RegisterController@register');
+
+//Airtime Vtu Request
+  Route::post('/mtn-airtime-vtu-api', 'AirtimeVtuController@mtn_airtime_vtu_api');
+  Route::post('/glo-airtime-vtu-api', 'AirtimeVtuController@glo_airtime_vtu_api');
+  Route::post('/airtel-airtime-vtu-api', 'AirtimeVtuController@airtel_airtime_vtu_api');
+  Route::post('/9mobile-airtime-vtu-api', 'AirtimeVtuController@etisalat_airtime_vtu_api');
+
+
+
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
