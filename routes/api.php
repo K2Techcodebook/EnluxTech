@@ -59,7 +59,10 @@ Route::post('/verify_startime_card_number', 'TvSubscriptionController@verify_sta
 
 //The Educational PURCHASE
   Route::post('/waec-reg-vtu-api', 'EducationSubscriptionController@waec_reg_vtu_api');
-Route::post('/waec-result-vtu-api', 'EducationSubscriptionController@waec_result_vtu_api');
+  Route::post('/waec-result-vtu-api', 'EducationSubscriptionController@waec_result_vtu_api');
+
+  // Electtricity
+  Route::post('/electric/verify', 'ElectricityController@verify');
 
 });
 
@@ -71,6 +74,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     'users'           => 'UserCustomer',
     'metas'           => 'MetaController',
     'medias'          => 'MediaController',
+    'electric'        => 'ElectricityController',
   ]);
 });
 
