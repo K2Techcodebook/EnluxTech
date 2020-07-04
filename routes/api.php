@@ -62,8 +62,9 @@ Route::post('/verify_startime_card_number', 'TvSubscriptionController@verify_sta
   Route::post('/waec-result-vtu-api', 'EducationSubscriptionController@waec_result_vtu_api');
 
   // Electtricity
-  Route::post('/electric/verify', 'ElectricityController@verify');
-  Route::post('/electric/purchase', 'ElectricityController@purchase');
+  Route::post('/electric/verify',       'ElectricityController@verify');
+  Route::post('/electric/purchase',     'ElectricityController@purchase');
+  Route::post('/electric/status',       'ElectricityController@status');
 
 });
 
