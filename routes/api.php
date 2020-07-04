@@ -63,6 +63,7 @@ Route::post('/verify_startime_card_number', 'TvSubscriptionController@verify_sta
 
   // Electtricity
   Route::post('/electric/verify', 'ElectricityController@verify');
+  Route::post('/electric/purchase', 'ElectricityController@purchase');
 
 });
 

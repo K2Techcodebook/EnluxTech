@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Myckhel\Vtpass\Support\Electric;
+use App\Models\Transcations;
 
 class ElectricityController extends Controller
 {
@@ -24,6 +26,51 @@ class ElectricityController extends Controller
       'billersCode' => $meter,
       'type'        => $type,
     ]);
+  }
+
+  public function purchase(Request $request)
+  {
+    $request->validate([
+      'serviceID' => 'required|in:eko-electric',
+      'type'      => 'required|in:postpaid,prepaid',
+      'meter'     => 'required|int:5,20',
+      'amount'    => 'required|required|regex:/^\d+(\.\d{1,2})?$/',
+      'phone'     => 'required|int:11,15',
+    ]);
+
+    $serviceID      = $request->serviceID;
+    $type           = $request->type;
+    $meter          = $request->meter;
+    $amount         = $request->amount;
+    $phone          = $request->phone;
+
+    $res = Electric::purchase([
+      'serviceID'       => $serviceID,
+      'billersCode'     => $meter,
+      'variation_code'  => $type,
+      'request_id'      => Str::random(),
+      'amount'          => $amount,
+      'phone'           => $phone,
+    ]);
+
+    if ($res['code'] == '000') {
+      Transcations::create([
+        'response_description' => $res['response_description'],
+        'product_name'         => $res['content']['transactions']['product_name'],
+        'transactionId'        => $res['content']['transactions']['transactionId'],
+        'requestId'            => $res['requestId'],
+        'type'                 => $res['content']['transactions']['type'],
+        'amout'                => $res['amount'],
+        'quantity'             => $res['content']['transactions']['quantity'],
+        'phone'                => $res['content']['transactions']['unique_element'],
+        'transaction_date'     => $res['transaction_date']['date']
+      ]);
+
+       return $res;
+    } else {
+      return $res;
+    }
+
   }
     /**
      * Display a listing of the resource.
