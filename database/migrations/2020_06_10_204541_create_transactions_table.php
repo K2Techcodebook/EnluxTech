@@ -16,6 +16,7 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->nullable()->unsigned();
+            $table->bigInteger('payment_id')->unsigned();
             $table->string('transactionId')->nullable();
             $table->string('requestId')->nullable();
             $table->string('type')->nullable();
@@ -30,6 +31,7 @@ class CreateTransactionsTable extends Migration
 
        Schema::table('transactions', function (Blueprint $table) {
          $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+         $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
        });
     }
 

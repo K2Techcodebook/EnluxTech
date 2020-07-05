@@ -14,6 +14,10 @@
         "options": {
             "symlink": true
         }
+      },
+      {
+          "type": "vcs",
+          "url": "https://github.com/myckhel/lpaystack"
       }
     ],
     "require": {
@@ -25,7 +29,8 @@
         "laravel/passport": "^9.2",
         "laravel/tinker": "^2.0",
         "myckhel/laravel-vtpass": "dev-master",
-        "spatie/laravel-medialibrary": "^8.2"
+        "spatie/laravel-medialibrary": "^8.2",
+        "xeviant/laravel-paystack": "dev-lar7"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

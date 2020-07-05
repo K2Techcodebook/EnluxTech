@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Myckhel\Vtpass\Support\Electric;
 use App\Models\Transaction;
+use App\Payment;
 
 class ElectricityController extends Controller
 {
@@ -36,6 +37,7 @@ class ElectricityController extends Controller
       'meter'     => 'required|int:5,20',
       'amount'    => 'required|required|regex:/^\d+(\.\d{1,2})?$/',
       'phone'     => 'required|int:11,15',
+      'trxref'    => 'required',
     ]);
 
     $serviceID      = $request->serviceID;
@@ -43,24 +45,40 @@ class ElectricityController extends Controller
     $meter          = $request->meter;
     $amount         = $request->amount;
     $phone          = $request->phone;
+    $trxref         = $request->trxref;
 
-    $res = Electric::purchase([
-      'serviceID'       => $serviceID,
-      'billersCode'     => $meter,
-      'variation_code'  => $type,
-      'request_id'      => Str::random(),
-      'amount'          => $amount,
-      'phone'           => $phone,
-    ]);
+    $payment        = Payment::whereReference($trxref)->first();
 
-    $user = $request->user('api');
+    if ($payment) {
+      // if payment has transaction
+      if ($payment->transaction) {
+        abort(400, "Payment Already Used For Another Service");
+      }
 
-    if ($res['code'] == '000') {
-      Transaction::addNew($res, $user);
+      if ($payment->status == 'success') {
+        $res = Electric::purchase([
+          'serviceID'       => $serviceID,
+          'billersCode'     => $meter,
+          'variation_code'  => $type,
+          'request_id'      => Str::random(),
+          'amount'          => $amount,
+          'phone'           => $phone,
+        ]);
 
-       return $res;
+        $user = $request->user('api');
+
+        if ($res['code'] == '000') {
+          Transaction::addNew($res, $payment->id, $user);
+
+           return $res;
+        } else {
+          return $res;
+        }
+      } else {
+        abort(400, "Payment With Reference Was Not Successful");
+      }
     } else {
-      return $res;
+      abort(400, "Payment With Reference Does Not Exist");
     }
   }
 

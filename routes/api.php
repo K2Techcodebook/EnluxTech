@@ -66,6 +66,12 @@ Route::post('/verify_startime_card_number', 'TvSubscriptionController@verify_sta
   Route::post('/electric/purchase',     'ElectricityController@purchase');
   Route::post('/electric/status',       'ElectricityController@status');
 
+  // Payments
+  Route::post('/payments/verify',       'PaymentController@verify');
+  Route::apiResources([
+    'payments'        => 'PaymentController',
+  ]);
+
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
