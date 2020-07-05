@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Transcations;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class TvSubscriptionController extends Controller
@@ -161,7 +161,7 @@ class TvSubscriptionController extends Controller
      'data'  => "cURL Error #:" . $err,
   ], 404);
     } else {
-      $customer =  Transcations::create(array(
+      $customer =  Transaction::create(array(
   'response_description' =>$response['response_description'],
    'product_name' =>$response['content']['transactions']['product_name'],
    'transactionId' => $response['content']['transactions']['transactionId'],
@@ -217,7 +217,7 @@ class TvSubscriptionController extends Controller
      'data'  => "cURL Error #:" . $err,
   ], 404);
     } else {
-      $customer =  Transcations::create(array(
+      $customer =  Transaction::create(array(
   'response_description' =>$response['response_description'],
    'product_name' =>$response['content']['transactions']['product_name'],
    'transactionId' => $response['content']['transactions']['transactionId'],
@@ -272,7 +272,7 @@ class TvSubscriptionController extends Controller
        'data'  => "cURL Error #:" . $err,
     ], 404);
       } else {
-        $customer =  Transcations::create(array(
+        $customer =  Transaction::create(array(
     'response_description' =>$response['response_description'],
      'product_name' =>$response['content']['transactions']['product_name'],
      'transactionId' => $response['content']['transactions']['transactionId'],

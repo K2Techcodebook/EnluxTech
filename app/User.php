@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\HasImage;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Transaction;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -53,6 +54,11 @@ class User extends Authenticatable implements HasMedia
         $this->addMediaConversion('medium')->nonQueued()
         ->width(400)->height(400);
       });
+    }
+
+    public function transactions()
+    {
+      return $this->hasMany(Transaction::class);
     }
 
     /**

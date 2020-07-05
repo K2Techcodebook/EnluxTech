@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Myckhel\Vtpass\Support\Electric;
-use App\Models\Transcations;
+use App\Models\Transaction;
 
 class ElectricityController extends Controller
 {
@@ -53,18 +53,10 @@ class ElectricityController extends Controller
       'phone'           => $phone,
     ]);
 
+    $user = $request->user('api');
+
     if ($res['code'] == '000') {
-      Transcations::create([
-        'response_description' => $res['response_description'],
-        'product_name'         => $res['content']['transactions']['product_name'],
-        'transactionId'        => $res['content']['transactions']['transactionId'],
-        'requestId'            => $res['requestId'],
-        'type'                 => $res['content']['transactions']['type'],
-        'amout'                => $res['amount'],
-        'quantity'             => $res['content']['transactions']['quantity'],
-        'phone'                => $res['content']['transactions']['unique_element'],
-        'transaction_date'     => $res['transaction_date']['date']
-      ]);
+      Transaction::addNew($res, $user);
 
        return $res;
     } else {
