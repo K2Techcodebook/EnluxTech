@@ -2154,8 +2154,8 @@
             "version": "dev-master",
             "dist": {
                 "type": "path",
-                "url": "C:/xampp/htdocs/enlux/packages/Myckhel/laravel-vtpass",
-                "reference": "ce49e7f3bece296f9d063c0b53d7a27224acad43"
+                "url": "./packages/Myckhel/laravel-vtpass",
+                "reference": "c4e46df604fefbe8a594d40cd3ff9aa014cbbd8f"
             },
             "require": {
                 "illuminate/support": "~5|~6|~7"
@@ -2188,7 +2188,7 @@
                 }
             },
             "license": [
-                "license"
+                "MIT"
             ],
             "authors": [
                 {

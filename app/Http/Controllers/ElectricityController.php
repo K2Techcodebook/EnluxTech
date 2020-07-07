@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Myckhel\Vtpass\Support\Electric;
+use VtPass;
 use App\Models\Transaction;
 use App\Payment;
 
@@ -13,7 +14,7 @@ class ElectricityController extends Controller
   public function verify(Request $request)
   {
     $request->validate([
-      'serviceID' => 'required|in:eko-electric',
+      'serviceID' => 'required|in:eko-electric,ikeja-electric,kano-electric,portharcourt-electric,jos-electric,ibadan-electric,kaduna-electric',
       'type'      => 'required|in:postpaid,prepaid',
       'meter'     => 'required|int:5,20',
     ]);
@@ -33,7 +34,7 @@ class ElectricityController extends Controller
   {
     $request->validate([
       'serviceID' => 'required|in:eko-electric',
-      'type'      => 'required|in:postpaid,prepaid',
+      'type'      => 'required|in:eko-electric,ikeja-electric,kano-electric,portharcourt-electric,jos-electric,ibadan-electric,kaduna-electric',
       'meter'     => 'required|int:5,20',
       'amount'    => 'required|required|regex:/^\d+(\.\d{1,2})?$/',
       'phone'     => 'required|int:11,15',
