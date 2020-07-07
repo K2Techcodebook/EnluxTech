@@ -43,17 +43,27 @@ trait HasImage
     }
   }
 
+  private function generateCollectionsUrl($collection, $medias = false){
+    $is_array = $this->collectionIsArray($collection);
+    $collection_name_is_array = is_array($collection);
+    $collection_name = $collection_name_is_array ? $collection[0] : $collection;
+    $collection_medias = !$medias ? $is_array ? $this->getMedia($collection_name) : $this->getFirstMedia($collection_name) : $medias;
+
+    $this->generateCollectionUrl($collection_medias, $is_array, $collection_name);
+  }
+
+  private function collectionIsArray($collection){
+   $collection = $this->getMediaCollection(is_array($collection) ? $collection[0] : $collection);
+   return $collection ? $collection->collectionSizeLimit > 1 : false;
+ }
+
   public function withUrls($collections, $is_array = false, $medias = null){
     if (is_array($collections)) {
-      $collection_medias = [];
-      foreach ($collections as $key => $collection) {
-        $is_array = is_array($collection);
-        if (!$medias) $collection_medias = $is_array ? $this->getMedia($collection[0]) : $this->getFirstMedia($collection);
-        $this->generateCollectionUrl($collection_medias, $is_array, $is_array ? $collection[0] : $collection);
+      foreach ($collections as $collection) {
+        $this->generateCollectionsUrl($collection, $medias);
       }
     } else {
-      if (!$medias) $medias = $is_array ? $this->getMedia($collections) : $this->getFirstMedia($collections);
-      $this->generateCollectionUrl($medias, $is_array, $collections);
+      $this->generateCollectionsUrl($collections, $medias);
     }
     return $this;
   }
