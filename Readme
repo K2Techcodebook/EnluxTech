@@ -1,1 +1,2 @@
-Enlux tech backend dev for topup 
+Enlux tech backend dev for topup
+php artisan passport:client --personal

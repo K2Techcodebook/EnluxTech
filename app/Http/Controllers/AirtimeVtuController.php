@@ -10,13 +10,15 @@ class AirtimeVtuController extends Controller
   {
     $username = "enluxtech@gmail.com"; //email address(sandbox@vtpass.com)
     $password = "Comkid@1"; //password (sandbox)
-    $host = 'http://sandbox.vtpass.com/api/pay';
+    $host = 'https://sandbox.vtpass.com/api/pay';
     $data = array(
       	'serviceID'=> $request->serviceID, //integer e.g mtn,airtel
       	'amount' => $request->amount, // integer
       	'phone' => $request->recepient, //integer
       	'request_id' => rand(100,9999) // unique for every transaction from your platform
     );
+
+
     $curl       = curl_init();
     curl_setopt_array($curl, array(
     CURLOPT_URL => $host,
@@ -31,7 +33,7 @@ class AirtimeVtuController extends Controller
     ));
     $response = json_decode(curl_exec( $curl ),true);
   $err = curl_error($curl);
-
+dd($response);
   curl_close($curl);
 
   if ($err) {
@@ -62,7 +64,7 @@ class AirtimeVtuController extends Controller
     {
       $username = "enluxtech@gmail.com"; //email address(sandbox@vtpass.com)
       $password = "Comkid@1"; //password (sandbox)
-      $host = 'http://sandbox.vtpass.com/api/pay';
+      $host = 'https://sandbox.vtpass.com/api/pay';
       $data = array(
         	'serviceID'=> $request->serviceID, //integer e.g mtn,airtel
         	'amount' => $request->amount, // integer
@@ -114,7 +116,7 @@ class AirtimeVtuController extends Controller
       {
         $username = "enluxtech@gmail.com"; //email address(sandbox@vtpass.com)
         $password = "Comkid@1"; //password (sandbox)
-        $host = 'http://sandbox.vtpass.com/api/pay';
+        $host = 'https://sandbox.vtpass.com/api/pay';
         $data = array(
             'serviceID'=> $request->serviceID, //integer e.g mtn,airtel
             'amount' => $request->amount, // integer
@@ -167,7 +169,7 @@ class AirtimeVtuController extends Controller
       {
         $username = "enluxtech@gmail.com"; //email address(sandbox@vtpass.com)
         $password = "Comkid@1"; //password (sandbox)
-        $host = 'http://sandbox.vtpass.com/api/pay';
+        $host = 'https://sandbox.vtpass.com/api/pay';
         $data = array(
             'serviceID'=> $request->serviceID, //integer e.g mtn,airtel
             'amount' => $request->amount, // integer

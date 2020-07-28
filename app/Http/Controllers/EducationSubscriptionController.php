@@ -10,7 +10,7 @@ class EducationSubscriptionController extends Controller
   {
     $username = "enluxtech@gmail.com"; //email address(sandbox@vtpass.com)
     $password = "Comkid@1"; //password (sandbox)
-    $host = 'http://sandbox.vtpass.com/api/pay';
+    $host = 'https://sandbox.vtpass.com/api/pay';
     $data = array(
       'serviceID'=> $request->serviceID, //integer e.g mtn,airtel
       'billersCode'=> $request->billersCode, // e.g smartcardNumber, meterNumber,
@@ -66,7 +66,7 @@ class EducationSubscriptionController extends Controller
     {
       $username = "enluxtech@gmail.com"; //email address(sandbox@vtpass.com)
       $password = "Comkid@1"; //password (sandbox)
-      $host = 'http://sandbox.vtpass.com/api/pay';
+      $host = 'https://sandbox.vtpass.com/api/pay';
       $data = array(
         'serviceID'=> $request->serviceID, //integer e.g mtn,airtel
         'billersCode'=> $request->billersCode, // e.g smartcardNumber, meterNumber,
