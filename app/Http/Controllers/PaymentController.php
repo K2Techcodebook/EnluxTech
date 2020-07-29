@@ -5,9 +5,23 @@ namespace App\Http\Controllers;
 use App\Payment;
 use Illuminate\Http\Request;
 use Paystack;
+use Vtpass;
 
 class PaymentController extends Controller
 {
+  public function status(Request $request)
+  {
+    $request->validate([
+      'request_id' => 'required',
+    ]);
+
+    $request_id = $request->request_id;
+
+    return Vtpass::status([
+      'request_id'      => $request_id,
+    ]);
+  }
+
     /**
      * Display a listing of the resource.
      *

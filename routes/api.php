@@ -70,6 +70,13 @@ Route::post('/verify_startime_card_number', 'TvSubscriptionController@verify_sta
   Route::post('/airtime/purchase',     'AirtimeVtuController@purchase');
   Route::post('/airtime/status',       'AirtimeVtuController@status');
 
+  // Data
+  Route::post('/data/purchase',     'DataSubscriptionController@purchase');
+  Route::get('/data/variations',    'DataSubscriptionController@variations');
+
+  // Transactions
+  Route::post('/transactions/status','PaymentController@status');
+
   // Payments
   Route::post('/payments/verify',       'PaymentController@verify');
   Route::apiResources([

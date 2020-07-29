@@ -33,8 +33,8 @@ class ElectricityController extends Controller
   public function purchase(Request $request)
   {
     $request->validate([
-      'serviceID' => 'required|in:eko-electric',
-      'type'      => 'required|in:eko-electric,ikeja-electric,kano-electric,portharcourt-electric,jos-electric,ibadan-electric,kaduna-electric',
+      'serviceID' => 'required|in:eko-electric,ikeja-electric,kano-electric,portharcourt-electric,jos-electric,ibadan-electric,kaduna-electric',
+      'type'      => 'required|in:prepaid,postpaid',
       'meter'     => 'required|int:5,20',
       'amount'    => 'required|required|regex:/^\d+(\.\d{1,2})?$/',
       'phone'     => 'required|int:11,15',
@@ -50,36 +50,24 @@ class ElectricityController extends Controller
 
     $payment        = Payment::whereReference($trxref)->first();
 
-    if ($payment) {
-      // if payment has transaction
-      if ($payment->transaction) {
-        abort(400, "Payment Already Used For Another Service");
-      }
+    $this->authorize('use', [Payment::class, $payment, $amount]);
 
-      if ($payment->status == 'success') {
-        $res = Electric::purchase([
-          'serviceID'       => $serviceID,
-          'billersCode'     => $meter,
-          'variation_code'  => $type,
-          'request_id'      => Str::random(),
-          'amount'          => $amount,
-          'phone'           => $phone,
-        ]);
+    $res = Electric::purchase([
+      'serviceID'       => $serviceID,
+      'billersCode'     => $meter,
+      'variation_code'  => $type,
+      'request_id'      => Str::random(),
+      'amount'          => $amount,
+      'phone'           => $phone,
+    ]);
 
-        $user = $request->user('api');
+    $user = $request->user('api');
 
-        if ($res['code'] == '000') {
-          Transaction::addNew($res, $payment->id, $user);
-
-           return $res;
-        } else {
-          return $res;
-        }
-      } else {
-        abort(400, "Payment With Reference Was Not Successful");
-      }
+    if ($res['code'] == '000') {
+      Transaction::addNew($res, $payment->id, $user);
+       return $res;
     } else {
-      abort(400, "Payment With Reference Does Not Exist");
+      return $res;
     }
   }
 

@@ -3,9 +3,60 @@
 namespace App\Http\Controllers;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Vtpass;
+use App\Payment;
 
 class DataSubscriptionController extends Controller
 {
+  public function purchase(Request $request)
+  {
+    $request->validate([
+	    // "variation_code"  => "required|in:mtn-100mb-1000",
+      // 'serviceID'       => 'required|in:mtn-data', //integer e.g mtn,airtel
+      'amount'          => 'required|regex:/^\d+(\.\d{1,2})?$/', // integer
+      'recepient'       => 'required', //integer
+      'trxref'          => 'required',
+      'phone'           => 'required',
+    ]);
+
+    $serviceID      = $request->serviceID;
+    $variation_code = $request->variation_code;
+    $amount         = $request->amount;
+    $recepient      = $request->recepient;
+    $request_id     = Str::random();
+    $trxref         = $request->trxref;
+    $phone          = $request->phone;
+
+    $payment        = Payment::whereReference($trxref)->first();
+
+    $this->authorize('use', [Payment::class, $payment, $amount]);
+
+    $res = Vtpass::purchase([
+      'serviceID'       => $serviceID,
+      'amount'          => $amount,
+      'billersCode'     => $recepient,
+      'variation_code'  => $variation_code,
+      'request_id'      => $request_id,
+      'phone'           => $phone,
+    ]);
+
+    $user = $request->user('api');
+
+    return Transaction::addNew($res, $payment->id, $user);
+  }
+
+  public function variations(Request $request)
+  {
+    $request->validate([
+      'serviceID'       => 'required|in:mtn-data', //integer e.g mtn,airtel
+    ]);
+
+    return Vtpass::variations([
+      'serviceID'       => $request->serviceID,
+    ]);
+  }
+
   public function get_variation_codes(Request $request)
   {
     $username = "enluxtech@gmail.com"; //email address(sandbox@vtpass.com)
