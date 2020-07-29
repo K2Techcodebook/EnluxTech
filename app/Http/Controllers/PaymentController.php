@@ -39,10 +39,9 @@ class PaymentController extends Controller
       $request->validate([
         'amount'                => 'required|numeric',
         'email'                 => 'email',
-        'trxref'                => 'required',
       ]);
 
-      \Request::instance()->query->set('trxref', $request->trxref);
+      // \Request::instance()->query->set('trxref', $request->trxref);
       $amount           = $request->amount;
       $type             = $request->type;
       $email            = $request->email;
@@ -54,36 +53,29 @@ class PaymentController extends Controller
 
         return Payment::create([
           'amount'                => $amount,
-          'access_code'           => $response['access_code'],
-          'reference'             => $request->trxref,
+          'access_code'           => $response['data']['access_code'],
+          'reference'             => $response['data']['reference'],
         ]);
       }
     }
 
     public function verify(Request $request)
     {
-      $request->validate([/*'reference' => 'required',*/ 'trxref' => 'required']);
+      $statusText = 'abandoned'; //for dev purpose
 
-      $paymentDetails   = Paystack::getPaymentData();
-      $payment          = Payment::where('reference', $paymentDetails->reference)->first();
+      $paymentDetails   = Paystack::getPaymentData()['data'];
 
+      $payment          = Payment::where('reference', $paymentDetails['reference'])->first();
       if ($payment && $payment->status == 'pending') {
         $user           = $payment->user;
-        if ($paymentDetails->status != 'success') {
+        if ($paymentDetails['status'] != $statusText) {
           $payment->update([
-            'status' => $paymentDetails->status,
+            'status' => $paymentDetails['status'],
           ]);
         }
 
-        if ($paymentDetails->status == 'success') {
-          $payment->update([
-            'status'              => $paymentDetails->status,
-            'message'             => $paymentDetails->message,
-            'reference'           => $paymentDetails->reference,
-            'authorization_code'  => $paymentDetails->authorization['authorization_code'],
-            'currency_code'       => $paymentDetails->currency,
-            'paid_at'             => now(),//$paymentDetails['data']['paidAt'],
-          ]);
+        if ($paymentDetails['status'] == $statusText) {
+          $payment->updatePay($paymentDetails);
         }
 
         return ['status' => true, 'payment' => $payment];
