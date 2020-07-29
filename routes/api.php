@@ -66,6 +66,10 @@ Route::post('/verify_startime_card_number', 'TvSubscriptionController@verify_sta
   Route::post('/electric/purchase',     'ElectricityController@purchase');
   Route::post('/electric/status',       'ElectricityController@status');
 
+  // Airtime
+  Route::post('/airtime/purchase',     'AirtimeVtuController@purchase');
+  Route::post('/airtime/status',       'AirtimeVtuController@status');
+
   // Payments
   Route::post('/payments/verify',       'PaymentController@verify');
   Route::apiResources([
